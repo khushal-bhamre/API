@@ -33,9 +33,14 @@ app.get('/api/users',(req,res)=>{
 app.get('/api/users/:id',(req,res)=>{
      const id = Number(req.params.id);
      const user =users.find((user)=>user.id==id);
-
-     res.json(user);
-
+     
+     if(user == undefined) 
+        {
+            res.status(404).json({error:'user not found'})
+        }
+        else{
+            res.json(user);
+        }
 })
 
 //post route
@@ -60,10 +65,28 @@ app.post('/api/users',(req,res)=>{
 
 })
 
-//put route -hw
+//put route 
 
-app.put('/api/user',(req,res)=>{
+app.put('/api/users/:id',(req,res)=>{
+    const id = Number(req.params.id);
+    const userIndex = users.findIndex((user)=>user.id == id);
 
+     if(userIndex == -1){
+        return res.status(404).json({error:'user not found'});
+     }
+
+     const updatedUser = {...users[userIndex] , ...req.body};
+     users[userIndex] = updatedUser;
+
+     //sync
+     try {
+        fs.writeFileSync(path.join(__dirname,'MOCK_DATA.json'),JSON.stringify(users));
+
+        return res.json({success:'user successfully updated',user:updatedUser})
+
+     } catch (error) {
+        return res.status(505).json({error:'failed to update the user'})
+     }
 })
 
 //patch route
