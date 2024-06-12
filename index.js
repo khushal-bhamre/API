@@ -27,6 +27,19 @@ app.get('/api/users',(req,res)=>{
     res.json(users);
 })
 
+//Query route
+
+app.get('/api/users/filter',(req,res)=>{
+
+   const queryJob = req.query.job_title;
+
+   const filteredData = users.filter((user)=>user.job_title === queryJob);
+
+   return res.json(filteredData);
+
+})
+
+
 
 //dynamic routing :
 
@@ -42,6 +55,9 @@ app.get('/api/users/:id',(req,res)=>{
             res.json(user);
         }
 })
+
+
+
 
 //post route
 
